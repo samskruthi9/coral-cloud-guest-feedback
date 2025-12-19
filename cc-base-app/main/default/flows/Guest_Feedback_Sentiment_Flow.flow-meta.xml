@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <decisions>
+        <description>Check Rating</description>
+        <name>Check_Rating</name>
+        <label>Check Rating</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Positive</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Rating__c</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue>
+                    <numberValue>4.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Positive_Sentiment</targetReference>
+            </connector>
+            <label>Positive</label>
+        </rules>
+        <rules>
+            <name>Neutral</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Rating__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>3.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Neutral_Sentiment</targetReference>
+            </connector>
+            <label>Neutral</label>
+        </rules>
+        <rules>
+            <name>Negative</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Rating__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <numberValue>2.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Negative_Sentiment</targetReference>
+            </connector>
+            <label>Negative</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Guest_Feedback_Sentiment_Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Guest_Feedback_Sentiment_Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Set_Negative_Sentiment</name>
+        <label>Set Negative Sentiment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>AI_Sentiment_Summary__c</field>
+            <value>
+                <stringValue>Negative feedback. Guest faced issues and requires follow-up.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Escalated__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Set_Neutral_Sentiment</name>
+        <label>Set Neutral Sentiment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>AI_Sentiment_Summary__c</field>
+            <value>
+                <stringValue>Neutral feedback. Guest experience was acceptable with scope for improvement.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Set_Positive_Sentiment</name>
+        <label>Set Positive Sentiment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>AI_Sentiment_Summary__c</field>
+            <value>
+                <stringValue>Positive feedback. Guest enjoyed the stay and service experience.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Rating</targetReference>
+        </connector>
+        <object>Guest_Feedback__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
